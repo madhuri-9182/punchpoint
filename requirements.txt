@@ -4,3 +4,4 @@ pydantic
 flask 
 flask-bcrypt
 Flask-SQLAlchemy
+gunicorn
