@@ -1,0 +1,30 @@
+steps:
+  # STEP 1 — Build image from Dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/dynamic-now-438707-c1/punchpoint',
+      '.'
+    ]
+
+  # STEP 2 — Push image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'gcr.io/dynamic-now-438707-c1/punchpoint'
+    ]
+
+  # STEP 3 — Deploy to Cloud Run Asia South 1 (Mumbai)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'run', 'deploy', 'punchpoint',
+      '--image', 'gcr.io/dynamic-now-438707-c1/punchpoint',
+      '--region', 'asia-south1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--port', '5000'
+    ]
+
+images:
+  - 'gcr.io/dynamic-now-438707-c1/punchpoint'
