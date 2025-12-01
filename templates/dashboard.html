@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="mb-4">Attendance Management System</h1>
+        
+        {% if session.employee_id %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Welcome, {{ session.employee_name }}!</h5>
+                    <p class="card-text">Manage your attendance records and clock in/out.</p>
+                    <a href="{{ url_for('webui.attendance_page') }}" class="btn btn-primary">Go to Attendance</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Employee Attendance System</h5>
+                    <p class="card-text">Please login or register to manage your attendance.</p>
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="{{ url_for('webui.login_page') }}" class="btn btn-primary">Login</a>
+                        <a href="{{ url_for('webui.register_page') }}" class="btn btn-success">Register</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="mt-4">
+            <h4>API Endpoints</h4>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <strong>POST /auth/register</strong> - Register new employee (JSON)
+                </div>
+                <div class="list-group-item">
+                    <strong>POST /auth/login</strong> - Login (JSON)
+                </div>
+                <div class="list-group-item">
+                    <strong>POST /attendance/in</strong> - Clock in (JSON)
+                </div>
+                <div class="list-group-item">
+                    <strong>POST /attendance/out</strong> - Clock out (JSON)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

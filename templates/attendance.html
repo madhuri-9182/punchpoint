@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2 class="mb-4">Attendance Management</h2>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Current Status</h5>
+                {% if current_session %}
+                    <p class="clock-status clocked-in">🟢 Currently CLOCKED IN</p>
+                    <p>Started at: {{ current_session.login_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    <form method="POST" action="{{ url_for('webui.clock_out') }}">
+                        <button type="submit" class="btn btn-warning">Clock Out</button>
+                    </form>
+                {% else %}
+                    <p class="clock-status clocked-out">🔵 Currently CLOCKED OUT</p>
+                    <form method="POST" action="{{ url_for('webui.clock_in') }}">
+                        <button type="submit" class="btn btn-success">Clock In</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Attendance Records</h5>
+            </div>
+            <div class="card-body">
+                {% if records %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in records %}
+                                <tr>
+                                    <td>{{ record.login_time.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ record.login_time.strftime('%H:%M:%S') }}</td>
+                                    <td>
+                                        {% if record.logout_time %}
+                                            {{ record.logout_time.strftime('%H:%M:%S') }}
+                                        {% else %}
+                                            <span class="badge bg-warning">Active</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if record.logout_time %}
+                                            {% set duration = record.logout_time - record.login_time %}
+                                            {{ (duration.total_seconds() // 3600)|int }}h {{ ((duration.total_seconds() % 3600) // 60)|int }}m
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No attendance records found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

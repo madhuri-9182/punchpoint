@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-header text-center bg-primary text-white">
+                <h4 class="mb-0">📝 Employee Registration</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" id="registerForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control form-control-lg" id="name" name="name" 
+                               placeholder="Enter your full name" required>
+                        <div class="form-text">Enter your complete name as per records.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control form-control-lg" id="email" name="email" 
+                               placeholder="name@example.com" required>
+                        <div class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control form-control-lg" id="password" name="password" 
+                               placeholder="Create a strong password" required>
+                        <div class="form-text">Use at least 8 characters with letters and numbers.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            ✅ Register Account
+                        </button>
+                        <a href="{{ url_for('webui.login_page') }}" class="btn btn-outline-secondary btn-lg">
+                            🔑 Already have an account? Login
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center text-muted">
+                <small>By registering, you agree to our terms and conditions.</small>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <small>
+                    Need help? Contact your administrator or 
+                    <a href="{{ url_for('webui.dashboard') }}">return to dashboard</a>.
+                </small>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        if (password.length < 6) {
+            alert('Password must be at least 6 characters long.');
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

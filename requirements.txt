@@ -1,0 +1,6 @@
+sqlalchemy
+python-jose
+pydantic
+flask 
+flask-bcrypt
+Flask-SQLAlchemy
