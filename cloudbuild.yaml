@@ -16,23 +16,27 @@ steps:
       'push',
       'gcr.io/dynamic-now-438707-c1/punchpoint:$COMMIT_SHA'
     ]
-
-  # STEP 3 — Setup GKE cluster (create if doesn't exist)
+  # STEP 3 — Setup GKE Standard cluster (create if doesn't exist)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
-      - '-c'
-      - |
-        # Check if cluster exists, create if it doesn't
-        if ! gcloud container clusters describe punchpoint-cluster \
-          --region asia-south1 --project dynamic-now-438707-c1 2>/dev/null; then
-          echo "Creating cluster..."
-          gcloud container clusters create-auto punchpoint-cluster \
-            --region asia-south1 \
-            --project dynamic-now-438707-c1
-        else
-          echo "Cluster already exists, skipping creation."
-        fi
+    - '-c'
+    - |
+      # Check if cluster exists, create if it doesn't
+      if ! gcloud container clusters describe punchpoint-cluster \
+        --region asia-south1 --project dynamic-now-438707-c1 >/dev/null 2>&1; then
+        echo "Creating STANDARD GKE cluster..."
+        gcloud container clusters create punchpoint-cluster \
+          --region asia-south1 \
+          --node-locations asia-south1-a,asia-south1-b,asia-south1-c \
+          --num-nodes 1 \
+          --enable-ip-alias \
+          --enable-autoscaling --min-nodes 1 --max-nodes 3 \
+          --machine-type e2-medium \
+          --project dynamic-now-438707-c1
+      else
+        echo "Cluster already exists, skipping creation."
+      fi
 
   # STEP 4 — Authenticate to GKE
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
