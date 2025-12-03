@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: punchpoint-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: punchpoint
+  template:
+    metadata:
+      labels:
+        app: punchpoint
+    spec:
+      containers:
+      - name: punchpoint
+        image: gcr.io/dynamic-now-438707-c1/punchpoint  # Will be replaced during build
+        ports:
+        - containerPort: 5000
+        env:
+        - name: PORT
+          value: "5000"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
