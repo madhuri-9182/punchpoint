@@ -43,66 +43,14 @@ steps:
       '--project', 'dynamic-now-438707-c1'
     ]
 
-  # STEP 5 — Deploy Kubernetes manifests
+ # STEP 6 — Deploy Kubernetes manifests
   - name: 'gcr.io/cloud-builders/kubectl'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Check if deployment exists
-        if kubectl get deployment punchpoint-deployment 2>/dev/null; then
-          # Update existing deployment
-          kubectl set image deployment/punchpoint-deployment \
-            punchpoint=gcr.io/dynamic-now-438707-c1/punchpoint:$COMMIT_SHA
-          kubectl rollout status deployment/punchpoint-deployment
-        else
-          # Create new deployment from YAML files
-          # Create or ensure deployment.yaml exists with image placeholder
-          cat <<EOF > deployment.yaml
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: punchpoint-deployment
-        spec:
-          replicas: 2
-          selector:
-            matchLabels:
-              app: punchpoint
-          template:
-            metadata:
-              labels:
-                app: punchpoint
-            spec:
-              containers:
-              - name: punchpoint
-                image: gcr.io/dynamic-now-438707-c1/punchpoint:\${COMMIT_SHA}
-                ports:
-                - containerPort: 5000
-        EOF
-          
-          # Create service.yaml if needed
-          cat <<EOF > service.yaml
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: punchpoint-service
-        spec:
-          type: LoadBalancer
-          selector:
-            app: punchpoint
-          ports:
-          - protocol: TCP
-            port: 80
-            targetPort: 5000
-        EOF
-          
-          # Replace placeholder with actual commit SHA
-          sed -i "s/\${COMMIT_SHA}/$COMMIT_SHA/g" deployment.yaml
-          
-          # Apply manifests
-          kubectl apply -f deployment.yaml
-          kubectl apply -f service.yaml
-        fi
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
 
 images:
   - 'gcr.io/dynamic-now-438707-c1/punchpoint:$COMMIT_SHA'
